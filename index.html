@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Henrique Höhn — Desenvolvedor Backend</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0D0F14;
+      --bg2:       #13161F;
+      --bg3:       #1A1E2B;
+      --border:    #252A38;
+      --accent:    #3B82F6;
+      --accent2:   #60A5FA;
+      --green:     #34D399;
+      --purple:    #A78BFA;
+      --text:      #E8EAF0;
+      --muted:     #7B8299;
+      --faint:     #3A3F52;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5vw;
+      height: 64px;
+      background: rgba(13, 15, 20, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-logo span { color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 120px 5vw 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.25;
+      pointer-events: none;
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: -200px; left: -100px;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-tag::before {
+      content: '';
+      display: inline-block;
+      width: 24px; height: 1px;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      max-width: 800px;
+      margin-bottom: 24px;
+    }
+
+    h1 .accent { color: var(--accent); }
+    h1 .dim    { color: var(--muted); }
+
+    .hero-desc {
+      max-width: 520px;
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin-bottom: 40px;
+      line-height: 1.75;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+      font-family: 'Space Grotesk', sans-serif;
+      letter-spacing: 0.01em;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border: 1px solid var(--accent);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent2);
+      border-color: var(--accent2);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 30px rgba(59,130,246,0.3);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--faint);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    /* ── TERMINAL ── */
+    .terminal {
+      margin-top: 60px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      max-width: 620px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    }
+
+    .terminal-bar {
+      background: var(--bg3);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-r { background: #FF5F57; }
+    .dot-y { background: #FEBC2E; }
+    .dot-g { background: #28C840; }
+
+    .terminal-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .terminal-body {
+      padding: 20px 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.9;
+    }
+
+    .t-prompt { color: var(--green); }
+    .t-cmd    { color: var(--text); }
+    .t-out    { color: var(--muted); }
+    .t-key    { color: var(--purple); }
+    .t-val    { color: var(--accent2); }
+    .t-str    { color: #FCD34D; }
+
+    .cursor {
+      display: inline-block;
+      width: 2px; height: 1em;
+      background: var(--accent);
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* ── SECTION BASE ── */
+    section { padding: 100px 5vw; }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      max-width: 60px;
+      height: 1px;
+      background: var(--accent);
+      opacity: 0.5;
+    }
+
+    h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      margin-bottom: 48px;
+      color: var(--text);
+    }
+
+    /* ── SKILLS ── */
+    #skills { background: var(--bg); }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .skill-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 28px;
+      transition: border-color 0.25s, transform 0.25s;
+    }
+
+    .skill-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    .skill-card-icon {
+      font-size: 1.6rem;
+      margin-bottom: 14px;
+    }
+
+    .skill-card h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      background: var(--bg3);
+      border: 1px solid var(--faint);
+      color: var(--muted);
+      padding: 4px 10px;
+      border-radius: 4px;
+      letter-spacing: 0.02em;
+      transition: all 0.2s;
+    }
+
+    .tag:hover {
+      border-color: var(--accent);
+      color: var(--accent2);
+    }
+
+    .tag.main {
+      border-color: rgba(59,130,246,0.4);
+      color: var(--accent2);
+      background: rgba(59,130,246,0.08);
+    }
+
+    .tag.green {
+      border-color: rgba(52,211,153,0.35);
+      color: var(--green);
+      background: rgba(52,211,153,0.07);
+    }
+
+    .tag.purple {
+      border-color: rgba(167,139,250,0.35);
+      color: var(--purple);
+      background: rgba(167,139,250,0.07);
+    }
+
+    /* ── ABOUT ── */
+    #about { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .about-text p {
+      color: var(--muted);
+      margin-bottom: 20px;
+      line-height: 1.85;
+    }
+
+    .about-text p strong { color: var(--text); font-weight: 500; }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .stat-box {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px 20px;
+    }
+
+    .stat-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+
+    /* ── TOOLS ── */
+    #tools { background: var(--bg); }
+
+    .tools-cluster {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      max-width: 860px;
+    }
+
+    .tool-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--muted);
+      transition: all 0.2s;
+      cursor: default;
+    }
+
+    .tool-badge:hover {
+      border-color: var(--faint);
+      color: var(--text);
+      background: var(--bg3);
+    }
+
+    .tool-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--faint);
+      flex-shrink: 0;
+    }
+
+    .tool-badge.active .tool-dot { background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .tool-badge.active { border-color: rgba(52,211,153,0.25); color: var(--text); }
+
+    /* ── CONTACT ── */
+    #contact { background: var(--bg2); border-top: 1px solid var(--border); }
+
+    .contact-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      max-width: 600px;
+    }
+
+    .contact-inner p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin-bottom: 36px;
+      line-height: 1.75;
+    }
+
+    .contact-email {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text);
+      text-decoration: none;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 2px;
+      letter-spacing: -0.01em;
+      transition: color 0.2s;
+    }
+
+    .contact-email:hover { color: var(--accent2); }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 32px 5vw;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    footer p {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--faint);
+    }
+
+    footer a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      transition: color 0.2s;
+    }
+
+    footer a:hover { color: var(--accent); }
+
+    /* ── DIVIDER ── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 0;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .about-stats { grid-template-columns: 1fr 1fr; }
+      section { padding: 70px 5vw; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cursor { animation: none; }
+      * { transition: none !important; }
+    }
+
+    /* ── FADE IN ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">hh<span>.</span>dev</a>
+  <ul class="nav-links">
+    <li><a href="#about">Sobre</a></li>
+    <li><a href="#skills">Habilidades</a></li>
+    <li><a href="#tools">Ferramentas</a></li>
+    <li><a href="#contact">Contato</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+
+  <div class="hero-tag">Desenvolvedor Backend</div>
+
+  <h1>
+    Henrique<br>
+    <span class="accent">Höhn</span><span class="dim">.</span>
+  </h1>
+
+  <p class="hero-desc">
+    Construo sistemas robustos com PHP, Go, TypeScript e Python —
+    do design de APIs ao pipeline de dados, sempre com foco em
+    qualidade, testes e boas práticas de engenharia.
+  </p>
+
+  <div class="hero-cta">
+    <a href="#skills" class="btn btn-primary">Ver habilidades</a>
+    <a href="mailto:hohnhenrique@gmail.com" class="btn btn-outline">Entrar em contato</a>
+  </div>
+
+  <div class="terminal fade-in">
+    <div class="terminal-bar">
+      <span class="dot dot-r"></span>
+      <span class="dot dot-y"></span>
+      <span class="dot dot-g"></span>
+      <span class="terminal-title">henrique@dev ~ zsh</span>
+    </div>
+    <div class="terminal-body">
+      <div><span class="t-prompt">❯</span> <span class="t-cmd">cat profile.json</span></div>
+      <div class="t-out">{</div>
+      <div class="t-out">&nbsp;&nbsp;<span class="t-key">"name"</span>: <span class="t-str">"Henrique Höhn"</span>,</div>
+      <div class="t-out">&nbsp;&nbsp;<span class="t-key">"stack"</span>: [<span class="t-str">"PHP"</span>, <span class="t-str">"Go"</span>, <span class="t-str">"TypeScript"</span>, <span class="t-str">"Python"</span>],</div>
+      <div class="t-out">&nbsp;&nbsp;<span class="t-key">"frameworks"</span>: [<span class="t-str">"Laravel"</span>, <span class="t-str">"React"</span>, <span class="t-str">"NestJS"</span>],</div>
+      <div class="t-out">&nbsp;&nbsp;<span class="t-key">"focus"</span>: <span class="t-str">"Backend &amp; APIs"</span>,</div>
+      <div class="t-out">&nbsp;&nbsp;<span class="t-key">"methodology"</span>: <span class="t-str">"Scrum / Kanban"</span>,</div>
+      <div class="t-out">&nbsp;&nbsp;<span class="t-key">"docker"</span>: <span class="t-val">true</span>,</div>
+      <div class="t-out">&nbsp;&nbsp;<span class="t-key">"tests"</span>: <span class="t-val">true</span></div>
+      <div class="t-out">}</div>
+      <div style="margin-top:8px"><span class="t-prompt">❯</span> <span class="cursor"></span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-text fade-in">
+      <div class="section-label">// sobre mim</div>
+      <h2>Engenharia com<br>propósito real</h2>
+      <p>
+        Sou desenvolvedor backend com experiência em <strong>PHP, Go, TypeScript e Python</strong>,
+        atuando em projetos que exigem código limpo, cobertura de testes e
+        arquitetura sustentável a longo prazo.
+      </p>
+      <p>
+        Trabalho com equipes ágeis usando <strong>Scrum e Kanban</strong> via Jira, Asana e Slack.
+        Tenho foco em qualidade de código com ferramentas como PHPUnit, PHPStan,
+        PHP Insights e testes de mutação com Infection.
+      </p>
+      <p>
+        Docker, DI Container e Composer fazem parte do meu dia a dia.
+        Também tenho experiência com mensageria via <strong>RabbitMQ</strong>,
+        monitoramento com <strong>Grafana</strong> e análise de dados com <strong>Power BI</strong>.
+      </p>
+    </div>
+    <div class="about-stats fade-in">
+      <div class="stat-box">
+        <div class="stat-num">5+</div>
+        <div class="stat-label">Linguagens de programação</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">6+</div>
+        <div class="stat-label">Bancos de dados</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Cobertura com testes unitários</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">Agile</div>
+        <div class="stat-label">Scrum & Kanban no dia a dia</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label fade-in">// habilidades</div>
+  <h2 class="fade-in">Tecnologias &<br>Especialidades</h2>
+
+  <div class="skills-grid">
+
+    <div class="skill-card fade-in">
+      <div class="skill-card-icon">⚙️</div>
+      <h3>Linguagens</h3>
+      <div class="tag-list">
+        <span class="tag main">PHP</span>
+        <span class="tag main">TypeScript</span>
+        <span class="tag main">Golang</span>
+        <span class="tag main">JavaScript</span>
+        <span class="tag main">Python</span>
+      </div>
+    </div>
+
+    <div class="skill-card fade-in">
+      <div class="skill-card-icon">🏗️</div>
+      <h3>Frameworks</h3>
+      <div class="tag-list">
+        <span class="tag main">Laravel</span>
+        <span class="tag main">NestJS</span>
+        <span class="tag main">React</span>
+        <span class="tag">FastAPI</span>
+        <span class="tag">React Native</span>
+        <span class="tag">Node.js</span>
+      </div>
+    </div>
+
+    <div class="skill-card fade-in">
+      <div class="skill-card-icon">🗄️</div>
+      <h3>Banco de Dados</h3>
+      <div class="tag-list">
+        <span class="tag green">PostgreSQL</span>
+        <span class="tag green">MySQL</span>
+        <span class="tag green">MariaDB</span>
+        <span class="tag green">SQL Server</span>
+        <span class="tag green">SQLite</span>
+        <span class="tag green">Elasticsearch</span>
+        <span class="tag green">Redis</span>
+      </div>
+    </div>
+
+    <div class="skill-card fade-in">
+      <div class="skill-card-icon">🧪</div>
+      <h3>Qualidade & Testes</h3>
+      <div class="tag-list">
+        <span class="tag purple">PHPUnit</span>
+        <span class="tag purple">PHPStan</span>
+        <span class="tag purple">PHP Insights</span>
+        <span class="tag purple">PHPCodeSniffer</span>
+        <span class="tag purple">Infection</span>
+        <span class="tag purple">CaptainHook</span>
+      </div>
+    </div>
+
+    <div class="skill-card fade-in">
+      <div class="skill-card-icon">🔀</div>
+      <h3>DevOps & Infra</h3>
+      <div class="tag-list">
+        <span class="tag main">Docker</span>
+        <span class="tag main">GitLab CI</span>
+        <span class="tag main">GitHub</span>
+        <span class="tag">Nginx</span>
+        <span class="tag">Composer</span>
+        <span class="tag">npm / Vite</span>
+      </div>
+    </div>
+
+    <div class="skill-card fade-in">
+      <div class="skill-card-icon">📐</div>
+      <h3>Arquitetura</h3>
+      <div class="tag-list">
+        <span class="tag main">DI Container</span>
+        <span class="tag main">Pimple</span>
+        <span class="tag main">REST API</span>
+        <span class="tag main">RabbitMQ</span>
+        <span class="tag">Microserviços</span>
+      </div>
+    </div>
+
+    <div class="skill-card fade-in">
+      <div class="skill-card-icon">📊</div>
+      <h3>Monitoramento & BI</h3>
+      <div class="tag-list">
+        <span class="tag">Grafana</span>
+        <span class="tag">Power BI</span>
+        <span class="tag">Chart.js</span>
+        <span class="tag">pgAdmin</span>
+        <span class="tag">DBeaver</span>
+      </div>
+    </div>
+
+    <div class="skill-card fade-in">
+      <div class="skill-card-icon">🤝</div>
+      <h3>Metodologias Ágeis</h3>
+      <div class="tag-list">
+        <span class="tag green">Scrum</span>
+        <span class="tag green">Kanban</span>
+        <span class="tag green">Sprint</span>
+        <span class="tag">Jira</span>
+        <span class="tag">Asana</span>
+        <span class="tag">Slack</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TOOLS -->
+<section id="tools">
+  <div class="section-label fade-in">// ferramentas</div>
+  <h2 class="fade-in">Stack completo<br>do dia a dia</h2>
+
+  <div class="tools-cluster fade-in">
+    <span class="tool-badge active"><span class="tool-dot"></span>Docker</span>
+    <span class="tool-badge active"><span class="tool-dot"></span>Git / GitLab</span>
+    <span class="tool-badge active"><span class="tool-dot"></span>GitHub</span>
+    <span class="tool-badge active"><span class="tool-dot"></span>Composer</span>
+    <span class="tool-badge active"><span class="tool-dot"></span>npm</span>
+    <span class="tool-badge active"><span class="tool-dot"></span>DI Container</span>
+    <span class="tool-badge active"><span class="tool-dot"></span>Jira</span>
+    <span class="tool-badge active"><span class="tool-dot"></span>Asana</span>
+    <span class="tool-badge active"><span class="tool-dot"></span>Slack</span>
+    <span class="tool-badge"><span class="tool-dot"></span>Vite</span>
+    <span class="tool-badge"><span class="tool-dot"></span>ESLint</span>
+    <span class="tool-badge"><span class="tool-dot"></span>Tailwind CSS</span>
+    <span class="tool-badge"><span class="tool-dot"></span>Nginx</span>
+    <span class="tool-badge"><span class="tool-dot"></span>pgAdmin</span>
+    <span class="tool-badge"><span class="tool-dot"></span>DBeaver</span>
+    <span class="tool-badge"><span class="tool-dot"></span>Grafana</span>
+    <span class="tool-badge"><span class="tool-dot"></span>Power BI</span>
+    <span class="tool-badge"><span class="tool-dot"></span>Chart.js</span>
+    <span class="tool-badge"><span class="tool-dot"></span>RabbitMQ</span>
+    <span class="tool-badge"><span class="tool-dot"></span>FastAPI</span>
+    <span class="tool-badge"><span class="tool-dot"></span>Node.js</span>
+    <span class="tool-badge"><span class="tool-dot"></span>React Native</span>
+  </div>
+
+  <p style="margin-top:24px; font-size:0.8rem; color:var(--faint); font-family:'JetBrains Mono',monospace;">
+    <span style="color:var(--green)">●</span> uso diário &nbsp;|&nbsp; <span style="background:var(--faint);display:inline-block;width:6px;height:6px;border-radius:50%;vertical-align:middle;"></span> experiência acumulada
+  </p>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="section-label fade-in">// contato</div>
+    <h2 class="fade-in">Vamos conversar?</h2>
+    <p class="fade-in">
+      Estou aberto a novas oportunidades, colaborações e projetos interessantes.
+      Se você tem algo em mente, me manda um e-mail.
+    </p>
+    <a href="mailto:hohnhenrique@gmail.com" class="contact-email fade-in">
+      hohnhenrique@gmail.com
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 Henrique Höhn — built with care</p>
+  <div style="display:flex;gap:24px;">
+    <a href="mailto:hohnhenrique@gmail.com">email</a>
+    <a href="https://github.com" target="_blank" rel="noopener">github</a>
+    <a href="https://gitlab.com" target="_blank" rel="noopener">gitlab</a>
+  </div>
+</footer>
+
+<script>
+  // Fade-in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Typewriter para o terminal
+  const lines = document.querySelectorAll('.terminal-body > div');
+  lines.forEach((line, i) => {
+    line.style.opacity = '0';
+    setTimeout(() => {
+      line.style.transition = 'opacity 0.2s';
+      line.style.opacity = '1';
+    }, 400 + i * 130);
+  });
+</script>
+</body>
+</html>
