@@ -24,6 +24,12 @@
     .nav-links a { font-size:0.8rem; color:var(--muted); text-decoration:none; letter-spacing:0.04em; text-transform:uppercase; font-weight:500; transition:color 0.2s; }
     .nav-links a:hover { color:var(--text); }
 
+    /* LANG TOGGLE */
+    .lang-toggle { display:flex; align-items:center; background:var(--bg3); border:1px solid var(--border); border-radius:6px; overflow:hidden; margin-left:8px; }
+    .lang-btn { font-family:'JetBrains Mono',monospace; font-size:0.72rem; font-weight:600; padding:5px 10px; cursor:pointer; background:none; border:none; color:var(--muted); letter-spacing:0.04em; transition:all 0.18s; }
+    .lang-btn.active { background:var(--accent); color:#fff; }
+    .lang-btn:not(.active):hover { color:var(--text); }
+
     /* HERO */
     #hero { min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:120px 5vw 80px; position:relative; overflow:hidden; }
     .hero-grid-bg { position:absolute; inset:0; background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px); background-size:60px 60px; opacity:0.2; pointer-events:none; }
@@ -105,6 +111,21 @@
     .proj-desc { font-size:0.85rem; color:var(--muted); line-height:1.65; }
     .proj-tags { display:flex; flex-wrap:wrap; gap:6px; }
     .proj-tag { font-family:'JetBrains Mono',monospace; font-size:0.67rem; background:var(--bg3); border:1px solid var(--faint); color:var(--muted); padding:3px 8px; border-radius:4px; }
+
+    /* TIMELINE */
+    .timeline { position:relative; max-width:760px; margin:0 auto 56px; padding-left:28px; }
+    .timeline::before { content:''; position:absolute; left:6px; top:6px; bottom:6px; width:2px; background:linear-gradient(180deg, var(--accent), var(--border) 90%); }
+    .timeline-item { position:relative; padding-bottom:32px; cursor:pointer; }
+    .timeline-item:last-child { padding-bottom:0; }
+    .timeline-dot { position:absolute; left:-28px; top:4px; width:14px; height:14px; border-radius:50%; background:var(--bg); border:2px solid var(--accent); transition:all 0.2s; z-index:2; }
+    .timeline-item.current .timeline-dot { background:var(--green); border-color:var(--green); box-shadow:0 0 0 4px rgba(52,211,153,0.15); }
+    .timeline-item:hover .timeline-dot { transform:scale(1.25); box-shadow:0 0 0 5px rgba(59,130,246,0.18); }
+    .timeline-card { background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:16px 20px; transition:border-color 0.2s, transform 0.2s; }
+    .timeline-item:hover .timeline-card { border-color:var(--accent); transform:translateX(4px); }
+    .timeline-top { display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap; }
+    .timeline-company { font-family:'Space Grotesk',sans-serif; font-size:0.98rem; font-weight:600; color:var(--text); }
+    .timeline-period { font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--faint); white-space:nowrap; }
+    .timeline-role { font-size:0.8rem; color:var(--accent2); font-family:'JetBrains Mono',monospace; margin-top:3px; }
 
     /* EXPERIENCE */
     #experience { background:var(--bg2); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
@@ -232,13 +253,19 @@
 <nav>
   <a href="#hero" class="nav-logo">hh<span>.</span>dev</a>
   <ul class="nav-links">
-    <li><a href="#about">Sobre</a></li>
-    <li><a href="#projects">Projetos</a></li>
-    <li><a href="#experience">Experiência</a></li>
-    <li><a href="#skills">Skills</a></li>
-    <li><a href="#tools">Ferramentas</a></li>
-    <li><a href="#education">Formação</a></li>
-    <li><a href="#contact">Contato</a></li>
+    <li><a href="#about" data-i18n="nav.about">Sobre</a></li>
+    <li><a href="#projects" data-i18n="nav.projects">Projetos</a></li>
+    <li><a href="#experience" data-i18n="nav.experience">Experiência</a></li>
+    <li><a href="#skills" data-i18n="nav.skills">Skills</a></li>
+    <li><a href="#tools" data-i18n="nav.tools">Ferramentas</a></li>
+    <li><a href="#education" data-i18n="nav.education">Formação</a></li>
+    <li><a href="#contact" data-i18n="nav.contact">Contato</a></li>
+    <li>
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('pt')" id="btn-pt">PT</button>
+        <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
+      </div>
+    </li>
   </ul>
 </nav>
 
@@ -249,9 +276,9 @@
 
   <div class="hero-layout">
     <div class="hero-left">
-      <div class="hero-tag">Desenvolvedor Backend · PHP &amp; Laravel</div>
+      <div class="hero-tag" data-i18n="hero.tag">Desenvolvedor Backend · PHP &amp; Laravel</div>
       <h1>Henrique<br><span class="accent">Höhn</span><span class="dim">.</span></h1>
-      <p class="hero-desc">
+      <p class="hero-desc" data-i18n="hero.desc">
         Especialista em backend com PHP e Laravel, atuando em sistemas ERP, integrações fiscais,
         financeiras e CRM. Foco em código limpo, testes e arquitetura sustentável.
       </p>
@@ -262,7 +289,7 @@
         </span>
         <span class="info-pill">
           <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-          27 anos
+          <span data-i18n="hero.age">27 anos</span>
         </span>
         <span class="info-pill">
           <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M22 16.92V19a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81 19.79 19.79 0 01.34 4.18 2 2 0 012 2h2.08a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L5.4 9.57a16 16 0 006.03 6.03l.93-.93a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
@@ -270,8 +297,12 @@
         </span>
       </div>
       <div class="hero-cta">
-        <a href="#projects" class="btn btn-primary">Ver projetos</a>
-        <a href="mailto:hohnhenrique@gmail.com" class="btn btn-outline">Entrar em contato</a>
+        <a href="#projects" class="btn btn-primary" data-i18n="hero.cta1">Ver projetos</a>
+        <a href="mailto:hohnhenrique@gmail.com" class="btn btn-outline" data-i18n="hero.cta2">Entrar em contato</a>
+        <a href="curriculo-henrique-hohn.pdf" target="_blank" download class="btn btn-outline">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          <span data-i18n="hero.cta3">Baixar currículo</span>
+        </a>
       </div>
     </div>
 
@@ -322,7 +353,7 @@
       <div><span class="t-prompt">❯</span> cat profile.json</div>
       <div class="t-out">{</div>
       <div class="t-out">&nbsp;&nbsp;<span class="t-key">"name"</span>: <span class="t-str">"Henrique Höhn"</span>,</div>
-      <div class="t-out">&nbsp;&nbsp;<span class="t-key">"focus"</span>: <span class="t-str">"Backend · PHP · Laravel"</span>,</div>
+      <div class="t-out">&nbsp;&nbsp;<span class="t-key">"focus"</span>: <span class="t-str" data-i18n-str="terminal.focus">"Backend · PHP · Laravel"</span>,</div>
       <div class="t-out">&nbsp;&nbsp;<span class="t-key">"location"</span>: <span class="t-str">"Chapecó, SC - Brasil"</span>,</div>
       <div class="t-out">&nbsp;&nbsp;<span class="t-key">"currently_at"</span>: <span class="t-str">"IXC Soft"</span>,</div>
       <div class="t-out">&nbsp;&nbsp;<span class="t-key">"available_for_remote_work"</span>: <span class="t-val">true</span>,</div>
@@ -343,28 +374,28 @@
 <section id="about">
   <div class="about-grid">
     <div class="about-text fade-in">
-      <div class="section-label">// sobre mim</div>
-      <h2>Backend sólido,<br>código com propósito</h2>
-      <p>
+      <div class="section-label" data-i18n="about.label">// sobre mim</div>
+      <h2 data-i18n="about.title">Backend sólido,<br>código com propósito</h2>
+      <p data-i18n="about.p1">
         Sou desenvolvedor com <strong>foco principal em backend PHP e Laravel</strong>, atuando desde 2020
         em empresas com produtos reais e times ágeis. Tenho experiência com sistemas ERP,
         CRM, integrações fiscais, módulos financeiros e muito mais.
       </p>
-      <p>
+      <p data-i18n="about.p2">
         Trabalho com <strong>Scrum e Kanban</strong>, escrevendo código testável e bem documentado.
         Docker e DI Container fazem parte do fluxo diário, junto de boas práticas com PHPStan,
         PHPUnit e testes de mutação com Infection.
       </p>
-      <p>
+      <p data-i18n="about.p3">
         Inglês técnico, curioso por natureza - estudo Node.js e Go nas horas vagas.
         Natural de Saudades, SC, atualmente em Chapecó.
       </p>
     </div>
     <div class="about-stats fade-in">
-      <div class="stat-box"><div class="stat-num">6+</div><div class="stat-label">Anos de experiência</div></div>
-      <div class="stat-box"><div class="stat-num">3</div><div class="stat-label">Empresas de tecnologia</div></div>
-      <div class="stat-box"><div class="stat-num">7+</div><div class="stat-label">Bancos de dados</div></div>
-      <div class="stat-box"><div class="stat-num">42km</div><div class="stat-label">Maratona completada 🏅</div></div>
+      <div class="stat-box"><div class="stat-num">6+</div><div class="stat-label" data-i18n="about.stat1">Anos de experiência</div></div>
+      <div class="stat-box"><div class="stat-num">3</div><div class="stat-label" data-i18n="about.stat2">Empresas de tecnologia</div></div>
+      <div class="stat-box"><div class="stat-num">7+</div><div class="stat-label" data-i18n="about.stat3">Bancos de dados</div></div>
+      <div class="stat-box"><div class="stat-num">42km</div><div class="stat-label" data-i18n="about.stat4">Maratona completada 🏅</div></div>
     </div>
   </div>
 </section>
@@ -373,8 +404,8 @@
 
 <!-- PROJECTS -->
 <section id="projects">
-  <div class="section-label fade-in">// projetos pessoais</div>
-  <h2 class="fade-in">O que construo<br>por conta própria</h2>
+  <div class="section-label fade-in" data-i18n="projects.label">// projetos pessoais</div>
+  <h2 class="fade-in" data-i18n="projects.title">O que construo<br>por conta própria</h2>
   <div class="proj-grid">
 
     <div class="proj-card fade-in">
@@ -386,7 +417,7 @@
         </a>
       </div>
       <div class="proj-name">financial-app</div>
-      <p class="proj-desc">Sistema para gerenciar finanças pessoais - controle de receitas, despesas, metas e fluxo de caixa.</p>
+      <p class="proj-desc" data-i18n="projects.financial">Sistema para gerenciar finanças pessoais - controle de receitas, despesas, metas e fluxo de caixa.</p>
       <div class="proj-tags">
         <span class="proj-tag">PHP</span>
         <span class="proj-tag">Laravel</span>
@@ -403,7 +434,7 @@
         </a>
       </div>
       <div class="proj-name">cla-go</div>
-      <p class="proj-desc">Sistema em Golang para gerenciar presença de um grupo de encontro evangélico. Projeto explorando Go na prática.</p>
+      <p class="proj-desc" data-i18n="projects.clago">Sistema em Golang para gerenciar presença de um grupo de encontro evangélico. Projeto explorando Go na prática.</p>
       <div class="proj-tags">
         <span class="proj-tag">Golang</span>
         <span class="proj-tag">Backend</span>
@@ -420,7 +451,7 @@
         </a>
       </div>
       <div class="proj-name">kings-league-next</div>
-      <p class="proj-desc">Plataforma para gerenciar campeonato de futebol de um grupo de amigos - tabela, rodadas, artilheiros e classificação.</p>
+      <p class="proj-desc" data-i18n="projects.kings">Plataforma para gerenciar campeonato de futebol de um grupo de amigos - tabela, rodadas, artilheiros e classificação.</p>
       <div class="proj-tags">
         <span class="proj-tag">Next.js</span>
         <span class="proj-tag">TypeScript</span>
@@ -435,24 +466,58 @@
 
 <!-- EXPERIENCE -->
 <section id="experience">
-  <div class="section-label fade-in">// experiência</div>
-  <h2 class="fade-in">Onde já trabalhei</h2>
+  <div class="section-label fade-in" data-i18n="exp.label">// experiência</div>
+  <h2 class="fade-in" data-i18n="exp.title">Onde já trabalhei</h2>
+
+  <div class="timeline fade-in">
+    <div class="timeline-item current" onclick="openModal('ixc')">
+      <span class="timeline-dot"></span>
+      <div class="timeline-card">
+        <div class="timeline-top">
+          <span class="timeline-company">IXC Soft</span>
+          <span class="timeline-period" data-i18n="exp.ixc.period">Set. 2024 → presente · ~1 ano</span>
+        </div>
+        <div class="timeline-role" data-i18n="exp.ixc.role">Desenvolvedor Backend</div>
+      </div>
+    </div>
+    <div class="timeline-item" onclick="openModal('finestra')">
+      <span class="timeline-dot"></span>
+      <div class="timeline-card">
+        <div class="timeline-top">
+          <span class="timeline-company">Finestra Móveis</span>
+          <span class="timeline-period" data-i18n="exp.finestra.period">Abr. 2021 → Set. 2024 · 3 anos e 5 meses</span>
+        </div>
+        <div class="timeline-role" data-i18n="exp.finestra.role">Desenvolvedor Fullstack</div>
+      </div>
+    </div>
+    <div class="timeline-item" onclick="openModal('dw2')">
+      <span class="timeline-dot"></span>
+      <div class="timeline-card">
+        <div class="timeline-top">
+          <span class="timeline-company">DW2 Digital</span>
+          <span class="timeline-period" data-i18n="exp.dw2.period">Jul. 2020 → Abr. 2021 · 9 meses</span>
+        </div>
+        <div class="timeline-role" data-i18n="exp.dw2.role">Desenvolvedor Mobile &amp; Suporte</div>
+      </div>
+    </div>
+  </div>
+
   <div class="exp-grid">
 
     <div class="exp-card current fade-in" onclick="openModal('ixc')">
       <div class="exp-top">
         <div class="exp-company">IXC Soft</div>
-        <span class="exp-badge badge-current">atual</span>
+        <span class="exp-badge badge-current" data-i18n="exp.current">atual</span>
       </div>
-      <div class="exp-role">Desenvolvedor Backend</div>
-      <div class="exp-period">Set. 2024 → presente · ~1 ano</div>
+      <div class="exp-role" data-i18n="exp.ixc.role">Desenvolvedor Backend</div>
+      <div class="exp-period" data-i18n="exp.ixc.period">Set. 2024 → presente · ~1 ano</div>
       <div class="exp-location">📍 Chapecó, SC</div>
-      <p style="font-size:0.83rem;color:var(--muted);margin-top:4px;line-height:1.6;">ERP para provedores de internet. Integrações fiscais, módulo financeiro e gestão de clientes e contratos.</p>
+      <p style="font-size:0.83rem;color:var(--muted);margin-top:4px;line-height:1.6;" data-i18n="exp.ixc.desc">ERP para provedores de internet. Integrações fiscais, módulo financeiro e gestão de clientes e contratos.</p>
       <div class="exp-tags">
         <span class="exp-tag">Laravel</span><span class="exp-tag">TypeScript</span>
         <span class="exp-tag">MariaDB</span><span class="exp-tag">Docker</span><span class="exp-tag">Scrum</span>
       </div>
-      <span class="exp-more">Ver detalhes →</span>
+      <span class="exp-more" data-i18n="exp.details">Ver detalhes →</span>
     </div>
 
     <div class="exp-card fade-in" onclick="openModal('finestra')">
@@ -460,15 +525,15 @@
         <div class="exp-company">Finestra Móveis</div>
         <span class="exp-badge badge-past">2021–2024</span>
       </div>
-      <div class="exp-role">Desenvolvedor Fullstack</div>
-      <div class="exp-period">Abr. 2021 → Set. 2024 · 3 anos e 5 meses</div>
+      <div class="exp-role" data-i18n="exp.finestra.role">Desenvolvedor Fullstack</div>
+      <div class="exp-period" data-i18n="exp.finestra.period">Abr. 2021 → Set. 2024 · 3 anos e 5 meses</div>
       <div class="exp-location">📍 Saudades, SC</div>
-      <p style="font-size:0.83rem;color:var(--muted);margin-top:4px;line-height:1.6;">Módulos internos: CD com RFID, pedidos comerciais, análise fiscal, custo de produto, RH e dashboards.</p>
+      <p style="font-size:0.83rem;color:var(--muted);margin-top:4px;line-height:1.6;" data-i18n="exp.finestra.desc">Módulos internos: CD com RFID, pedidos comerciais, análise fiscal, custo de produto, RH e dashboards.</p>
       <div class="exp-tags">
         <span class="exp-tag">Laravel</span><span class="exp-tag">SQL Server</span>
         <span class="exp-tag">Power BI</span><span class="exp-tag">PHP</span>
       </div>
-      <span class="exp-more">Ver detalhes →</span>
+      <span class="exp-more" data-i18n="exp.details">Ver detalhes →</span>
     </div>
 
     <div class="exp-card fade-in" onclick="openModal('dw2')">
@@ -476,14 +541,14 @@
         <div class="exp-company">DW2 Digital</div>
         <span class="exp-badge badge-past">2020–2021</span>
       </div>
-      <div class="exp-role">Desenvolvedor Mobile &amp; Suporte</div>
-      <div class="exp-period">Jul. 2020 → Abr. 2021 · 9 meses</div>
+      <div class="exp-role" data-i18n="exp.dw2.role">Desenvolvedor Mobile &amp; Suporte</div>
+      <div class="exp-period" data-i18n="exp.dw2.period">Jul. 2020 → Abr. 2021 · 9 meses</div>
       <div class="exp-location">📍 Pinhalzinho, SC</div>
-      <p style="font-size:0.83rem;color:var(--muted);margin-top:4px;line-height:1.6;">App mobile CRM em React Native + API Laravel. Primeiro emprego como desenvolvedor.</p>
+      <p style="font-size:0.83rem;color:var(--muted);margin-top:4px;line-height:1.6;" data-i18n="exp.dw2.desc">App mobile CRM em React Native + API Laravel. Primeiro emprego como desenvolvedor.</p>
       <div class="exp-tags">
         <span class="exp-tag">React Native</span><span class="exp-tag">Laravel</span><span class="exp-tag">PostgreSQL</span>
       </div>
-      <span class="exp-more">Ver detalhes →</span>
+      <span class="exp-more" data-i18n="exp.details">Ver detalhes →</span>
     </div>
 
   </div>
@@ -493,17 +558,17 @@
 
 <!-- SKILLS -->
 <section id="skills">
-  <div class="section-label fade-in">// habilidades</div>
-  <h2 class="fade-in">Tecnologias &amp;<br>Especialidades</h2>
+  <div class="section-label fade-in" data-i18n="skills.label">// habilidades</div>
+  <h2 class="fade-in" data-i18n="skills.title">Tecnologias &amp;<br>Especialidades</h2>
   <div class="skills-grid">
-    <div class="skill-card fade-in"><div class="skill-card-icon">⚙️</div><h3>Linguagens</h3><div class="tag-list"><span class="tag main">PHP</span><span class="tag main">TypeScript</span><span class="tag main">JavaScript</span><span class="tag main">Golang</span><span class="tag main">Python</span></div></div>
-    <div class="skill-card fade-in"><div class="skill-card-icon">🏗️</div><h3>Frameworks</h3><div class="tag-list"><span class="tag main">Laravel</span><span class="tag main">NestJS</span><span class="tag main">React</span><span class="tag">FastAPI</span><span class="tag">React Native</span><span class="tag">Node.js</span></div></div>
-    <div class="skill-card fade-in"><div class="skill-card-icon">🗄️</div><h3>Banco de Dados</h3><div class="tag-list"><span class="tag green">PostgreSQL</span><span class="tag green">MySQL</span><span class="tag green">MariaDB</span><span class="tag green">SQL Server</span><span class="tag green">SQLite</span><span class="tag green">Elasticsearch</span><span class="tag green">Redis</span></div></div>
-    <div class="skill-card fade-in"><div class="skill-card-icon">🧪</div><h3>Qualidade &amp; Testes</h3><div class="tag-list"><span class="tag purple">PHPUnit</span><span class="tag purple">PHPStan</span><span class="tag purple">PHP Insights</span><span class="tag purple">PHPCodeSniffer</span><span class="tag purple">Infection</span><span class="tag purple">CaptainHook</span></div></div>
-    <div class="skill-card fade-in"><div class="skill-card-icon">🔀</div><h3>DevOps &amp; Infra</h3><div class="tag-list"><span class="tag main">Docker</span><span class="tag main">GitLab CI</span><span class="tag main">GitHub</span><span class="tag">Nginx</span><span class="tag">Composer</span><span class="tag">npm / Vite</span></div></div>
-    <div class="skill-card fade-in"><div class="skill-card-icon">📐</div><h3>Arquitetura &amp; Integrações</h3><div class="tag-list"><span class="tag main">DI Container</span><span class="tag main">REST API</span><span class="tag main">RabbitMQ</span><span class="tag main">Pimple</span><span class="tag">Microserviços</span></div></div>
-    <div class="skill-card fade-in"><div class="skill-card-icon">📊</div><h3>Dados &amp; Monitoramento</h3><div class="tag-list"><span class="tag">Grafana</span><span class="tag">Power BI</span><span class="tag">Chart.js</span><span class="tag">pgAdmin</span><span class="tag">DBeaver</span></div></div>
-    <div class="skill-card fade-in"><div class="skill-card-icon">🤝</div><h3>Metodologias</h3><div class="tag-list"><span class="tag green">Scrum</span><span class="tag green">Kanban</span><span class="tag green">Sprint</span><span class="tag">Jira</span><span class="tag">Asana</span><span class="tag">Slack</span></div></div>
+    <div class="skill-card fade-in"><div class="skill-card-icon">⚙️</div><h3 data-i18n="skills.languages">Linguagens</h3><div class="tag-list"><span class="tag main">PHP</span><span class="tag main">TypeScript</span><span class="tag main">JavaScript</span><span class="tag main">Golang</span><span class="tag main">Python</span></div></div>
+    <div class="skill-card fade-in"><div class="skill-card-icon">🏗️</div><h3 data-i18n="skills.frameworks">Frameworks</h3><div class="tag-list"><span class="tag main">Laravel</span><span class="tag main">NestJS</span><span class="tag main">React</span><span class="tag">FastAPI</span><span class="tag">React Native</span><span class="tag">Node.js</span></div></div>
+    <div class="skill-card fade-in"><div class="skill-card-icon">🗄️</div><h3 data-i18n="skills.databases">Banco de Dados</h3><div class="tag-list"><span class="tag green">PostgreSQL</span><span class="tag green">MySQL</span><span class="tag green">MariaDB</span><span class="tag green">SQL Server</span><span class="tag green">SQLite</span><span class="tag green">Elasticsearch</span><span class="tag green">Redis</span></div></div>
+    <div class="skill-card fade-in"><div class="skill-card-icon">🧪</div><h3 data-i18n="skills.quality">Qualidade &amp; Testes</h3><div class="tag-list"><span class="tag purple">PHPUnit</span><span class="tag purple">PHPStan</span><span class="tag purple">PHP Insights</span><span class="tag purple">PHPCodeSniffer</span><span class="tag purple">Infection</span><span class="tag purple">CaptainHook</span></div></div>
+    <div class="skill-card fade-in"><div class="skill-card-icon">🔀</div><h3 data-i18n="skills.devops">DevOps &amp; Infra</h3><div class="tag-list"><span class="tag main">Docker</span><span class="tag main">GitLab CI</span><span class="tag main">GitHub</span><span class="tag">Nginx</span><span class="tag">Composer</span><span class="tag">npm / Vite</span></div></div>
+    <div class="skill-card fade-in"><div class="skill-card-icon">📐</div><h3 data-i18n="skills.arch">Arquitetura &amp; Integrações</h3><div class="tag-list"><span class="tag main">DI Container</span><span class="tag main">REST API</span><span class="tag main">RabbitMQ</span><span class="tag main">Pimple</span><span class="tag">Microserviços</span></div></div>
+    <div class="skill-card fade-in"><div class="skill-card-icon">📊</div><h3 data-i18n="skills.data">Dados &amp; Monitoramento</h3><div class="tag-list"><span class="tag">Grafana</span><span class="tag">Power BI</span><span class="tag">Chart.js</span><span class="tag">pgAdmin</span><span class="tag">DBeaver</span></div></div>
+    <div class="skill-card fade-in"><div class="skill-card-icon">🤝</div><h3 data-i18n="skills.methods">Metodologias</h3><div class="tag-list"><span class="tag green">Scrum</span><span class="tag green">Kanban</span><span class="tag green">Sprint</span><span class="tag">Jira</span><span class="tag">Asana</span><span class="tag">Slack</span></div></div>
   </div>
 </section>
 
@@ -511,8 +576,8 @@
 
 <!-- TOOLS -->
 <section id="tools">
-  <div class="section-label fade-in">// ferramentas</div>
-  <h2 class="fade-in">Stack do dia a dia</h2>
+  <div class="section-label fade-in" data-i18n="tools.label">// ferramentas</div>
+  <h2 class="fade-in" data-i18n="tools.title">Stack do dia a dia</h2>
   <div class="tools-cluster fade-in">
     <span class="tool-badge active"><span class="tool-dot"></span>Docker</span>
     <span class="tool-badge active"><span class="tool-dot"></span>PhpStorm</span>
@@ -522,23 +587,23 @@
     <span class="tool-badge active"><span class="tool-dot"></span>Composer</span>
     <span class="tool-badge active"><span class="tool-dot"></span>npm</span>
     <span class="tool-badge active"><span class="tool-dot"></span>DI Container</span>
+    <span class="tool-badge active"><span class="tool-dot"></span>RabbitMQ</span>
     <span class="tool-badge active"><span class="tool-dot"></span>Jira</span>
     <span class="tool-badge active"><span class="tool-dot"></span>Asana</span>
     <span class="tool-badge active"><span class="tool-dot"></span>Slack</span>
     <span class="tool-badge active"><span class="tool-dot"></span>DBeaver</span>
+    <span class="tool-badge active"><span class="tool-dot"></span>Grafana</span>
     <span class="tool-badge"><span class="tool-dot"></span>pgAdmin</span>
     <span class="tool-badge"><span class="tool-dot"></span>Vite</span>
     <span class="tool-badge"><span class="tool-dot"></span>ESLint</span>
     <span class="tool-badge"><span class="tool-dot"></span>Tailwind CSS</span>
     <span class="tool-badge"><span class="tool-dot"></span>Nginx</span>
-    <span class="tool-badge"><span class="tool-dot"></span>Grafana</span>
     <span class="tool-badge"><span class="tool-dot"></span>Power BI</span>
     <span class="tool-badge"><span class="tool-dot"></span>Chart.js</span>
-    <span class="tool-badge"><span class="tool-dot"></span>RabbitMQ</span>
   </div>
   <p style="margin-top:20px;font-size:0.74rem;color:var(--faint);font-family:'JetBrains Mono',monospace;">
-    <span style="color:var(--green)">●</span> uso diário &nbsp;|&nbsp;
-    <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--faint);vertical-align:middle;"></span> experiência acumulada
+    <span style="color:var(--green)">●</span> <span data-i18n="tools.daily">uso diário</span> &nbsp;|&nbsp;
+    <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--faint);vertical-align:middle;"></span> <span data-i18n="tools.exp">experiência acumulada</span>
   </p>
 </section>
 
@@ -546,13 +611,13 @@
 
 <!-- EDUCATION -->
 <section id="education">
-  <div class="section-label fade-in">// formação</div>
-  <h2 class="fade-in">Educação &amp;<br>Certificações</h2>
+  <div class="section-label fade-in" data-i18n="edu.label">// formação</div>
+  <h2 class="fade-in" data-i18n="edu.title">Educação &amp;<br>Certificações</h2>
   <div class="edu-grid">
-    <div class="edu-card fade-in"><div class="edu-icon">🎓</div><div class="edu-degree">Sistemas de Informação</div><div class="edu-inst">Horus Faculdades - Pinhalzinho, SC</div><div class="edu-meta">Ensino Superior Completo</div></div>
-    <div class="edu-card fade-in"><div class="edu-icon">💻</div><div class="edu-degree">Cursos de Programação</div><div class="edu-inst">Diversas plataformas</div><div class="edu-meta">PHP · Laravel · Backend · APIs · Go · e mais</div></div>
-    <div class="edu-card fade-in"><div class="edu-icon">🌐</div><div class="edu-degree">Inglês Técnico</div><div class="edu-inst">Leitura e escrita fluente</div><div class="edu-meta">Documentações, issues, PRs</div></div>
-    <div class="edu-card fade-in"><div class="edu-icon">🧠</div><div class="edu-degree">Gestão &amp; Soft Skills</div><div class="edu-inst">Cursos complementares</div><div class="edu-meta">Liderança · Gestão de pessoas · Desenvolvimento pessoal</div></div>
+    <div class="edu-card fade-in"><div class="edu-icon">🎓</div><div class="edu-degree" data-i18n="edu.degree1">Sistemas de Informação</div><div class="edu-inst">Horus Faculdades - Pinhalzinho, SC</div><div class="edu-meta" data-i18n="edu.meta1">Ensino Superior Completo</div></div>
+    <div class="edu-card fade-in"><div class="edu-icon">💻</div><div class="edu-degree" data-i18n="edu.degree2">Cursos de Programação</div><div class="edu-inst" data-i18n="edu.inst2">Diversas plataformas</div><div class="edu-meta">PHP · Laravel · Backend · APIs · Go · e mais</div></div>
+    <div class="edu-card fade-in"><div class="edu-icon">🌐</div><div class="edu-degree" data-i18n="edu.degree3">Inglês Técnico</div><div class="edu-inst" data-i18n="edu.inst3">Leitura e escrita fluente</div><div class="edu-meta" data-i18n="edu.meta3">Documentações, issues, PRs</div></div>
+    <div class="edu-card fade-in"><div class="edu-icon">🧠</div><div class="edu-degree" data-i18n="edu.degree4">Gestão &amp; Soft Skills</div><div class="edu-inst" data-i18n="edu.inst4">Cursos complementares</div><div class="edu-meta" data-i18n="edu.meta4">Liderança · Gestão de pessoas · Desenvolvimento pessoal</div></div>
   </div>
 </section>
 
@@ -561,16 +626,16 @@
 <!-- CONTACT -->
 <section id="contact">
   <div class="contact-inner">
-    <div class="section-label fade-in">// contato</div>
-    <h2 class="fade-in">Vamos conversar?</h2>
-    <p class="fade-in">Aberto a novas oportunidades, colaborações e projetos. Escolha o canal de preferência.</p>
+    <div class="section-label fade-in" data-i18n="contact.label">// contato</div>
+    <h2 class="fade-in" data-i18n="contact.title">Vamos conversar?</h2>
+    <p class="fade-in" data-i18n="contact.desc">Aberto a novas oportunidades, colaborações e projetos. Escolha o canal de preferência.</p>
     <div class="contact-links fade-in">
       <div class="contact-row"><span class="contact-row-label">email</span><a href="mailto:hohnhenrique@gmail.com">hohnhenrique@gmail.com</a></div>
       <div class="contact-row"><span class="contact-row-label">whatsapp</span><a href="https://wa.me/5549999187545" target="_blank" rel="noopener">(49) 99918-7545</a></div>
-      <div class="contact-row"><span class="contact-row-label">telefone</span><a href="tel:+5549999187545">(49) 99918-7545</a></div>
+      <div class="contact-row"><span class="contact-row-label" data-i18n="contact.phone">telefone</span><a href="tel:+5549999187545">(49) 99918-7545</a></div>
       <div class="contact-row"><span class="contact-row-label">github</span><a href="https://github.com/hohnhenrique" target="_blank" rel="noopener">github.com/hohnhenrique</a></div>
       <div class="contact-row"><span class="contact-row-label">linkedin</span><a href="https://www.linkedin.com/in/henrique-h-2aa80013b/" id="linkedinContact" target="_blank" rel="noopener">linkedin.com/in/henrique-hohn</a></div>
-      <div class="contact-row"><span class="contact-row-label">local</span><span>Chapecó, SC - Brasil</span></div>
+      <div class="contact-row"><span class="contact-row-label" data-i18n="contact.location">local</span><span>Chapecó, SC - Brasil</span></div>
     </div>
   </div>
 </section>
@@ -592,35 +657,35 @@
   <div class="modal">
     <div class="modal-header">
       <div>
-        <div class="modal-company">Além do código</div>
-        <div class="modal-role">Quem é Henrique fora do trabalho</div>
+        <div class="modal-company" data-i18n="modal.personal.title">Além do código</div>
+        <div class="modal-role" data-i18n="modal.personal.sub">Quem é Henrique fora do trabalho</div>
       </div>
       <button class="modal-close" onclick="closeModal('personal')">✕</button>
     </div>
     <div class="modal-body">
-      <p>Natural de <strong>Saudades, SC</strong>, atualmente morando em <strong>Chapecó</strong>. Filho mais novo de <strong>Ivone Höhn e João Lídio Höhn</strong>, irmão da <strong>Caroline Höhn</strong> e tio coruja de duas meninas - <strong>Heloísa e Isabela</strong>.</p>
+      <p data-i18n="modal.personal.p1">Natural de <strong>Saudades, SC</strong>, atualmente morando em <strong>Chapecó</strong>. Filho mais novo de <strong>Ivone Höhn e João Lídio Höhn</strong>, irmão da <strong>Caroline Höhn</strong> e tio coruja de duas meninas - <strong>Heloísa e Isabela</strong>.</p>
 
-      <div class="modal-section-title">O que faço fora da tela</div>
+      <div class="modal-section-title" data-i18n="modal.personal.outside">O que faço fora da tela</div>
       <div class="personal-grid">
         <div class="personal-item">
           <div class="personal-item-icon">✝️</div>
-          <div class="personal-item-label">Líder de jovens</div>
-          <div class="personal-item-desc">Cristão evangélico e líder de jovens na minha igreja. Acredito que liderança é sobre servir e inspirar pessoas.</div>
+          <div class="personal-item-label" data-i18n="modal.personal.church.title">Líder de jovens</div>
+          <div class="personal-item-desc" data-i18n="modal.personal.church.desc">Cristão evangélico e líder de jovens na minha igreja. Acredito que liderança é sobre servir e inspirar pessoas.</div>
         </div>
         <div class="personal-item">
           <div class="personal-item-icon">⚽</div>
-          <div class="personal-item-label">Futebol</div>
-          <div class="personal-item-desc">Jogo bastante futebol - tanto que criei um sistema pra gerenciar o campeonato do grupo de amigos.</div>
+          <div class="personal-item-label" data-i18n="modal.personal.football.title">Futebol</div>
+          <div class="personal-item-desc" data-i18n="modal.personal.football.desc">Jogo bastante futebol - tanto que criei um sistema pra gerenciar o campeonato do grupo de amigos.</div>
         </div>
         <div class="personal-item">
           <div class="personal-item-icon">🏅</div>
-          <div class="personal-item-label">Corrida & Maratona</div>
-          <div class="personal-item-desc">Corredor de longa distância. Em 2024, completei uma <strong>maratona de 42 km</strong> em Porto Alegre - um dos maiores desafios pessoais da minha vida.</div>
+          <div class="personal-item-label" data-i18n="modal.personal.run.title">Corrida & Maratona</div>
+          <div class="personal-item-desc" data-i18n="modal.personal.run.desc">Corredor de longa distância. Em 2024, completei uma <strong>maratona de 42 km</strong> em Porto Alegre - um dos maiores desafios pessoais da minha vida.</div>
         </div>
         <div class="personal-item">
           <div class="personal-item-icon">👨‍💻</div>
-          <div class="personal-item-label">Projetos pessoais</div>
-          <div class="personal-item-desc">Construo sistemas para resolver problemas reais do meu dia a dia - finanças, campeonatos, encontros de grupo.</div>
+          <div class="personal-item-label" data-i18n="modal.personal.projects.title">Projetos pessoais</div>
+          <div class="personal-item-desc" data-i18n="modal.personal.projects.desc">Construo sistemas para resolver problemas reais do meu dia a dia - finanças, campeonatos, encontros de grupo.</div>
         </div>
       </div>
 
@@ -635,19 +700,19 @@
 <div class="modal-backdrop" id="modal-ixc" onclick="closeOnBackdrop(event,'ixc')">
   <div class="modal">
     <div class="modal-header">
-      <div><div class="modal-company">IXC Soft</div><div class="modal-role">Desenvolvedor Backend</div><div class="modal-period">Set. 2024 → presente · Chapecó, SC</div></div>
+      <div><div class="modal-company">IXC Soft</div><div class="modal-role" data-i18n="exp.ixc.role">Desenvolvedor Backend</div><div class="modal-period" data-i18n="exp.ixc.period2">Set. 2024 → presente · Chapecó, SC</div></div>
       <button class="modal-close" onclick="closeModal('ixc')">✕</button>
     </div>
     <div class="modal-body">
-      <p>A IXC Soft é uma empresa de <strong>software ERP voltado para provedores de internet</strong>, com ampla base de clientes no Brasil. Atuo no time de backend desenvolvendo e mantendo módulos críticos do sistema.</p>
-      <div class="modal-section-title">Principais atuações</div>
+      <p data-i18n="modal.ixc.p">A IXC Soft é uma empresa de <strong>software ERP voltado para provedores de internet</strong>, com ampla base de clientes no Brasil. Atuo no time de backend desenvolvendo e mantendo módulos críticos do sistema.</p>
+      <div class="modal-section-title" data-i18n="modal.highlights">Principais atuações</div>
       <ul class="modal-achievements">
-        <li><strong>Integrações fiscais:</strong> desenvolvimento e manutenção de fluxos de emissão e validação de notas fiscais eletrônicas.</li>
-        <li><strong>Módulo financeiro:</strong> regras de cobrança, fluxo de pagamentos e relatórios financeiros.</li>
-        <li><strong>Gestão de clientes e contratos:</strong> funcionalidades de CRM interno, histórico de contratos e automações.</li>
-        <li>Trabalho com <strong>Scrum/Kanban via GitLab</strong>, participando de sprints e code reviews regulares.</li>
+        <li data-i18n="modal.ixc.b1"><strong>Integrações fiscais:</strong> desenvolvimento e manutenção de fluxos de emissão e validação de notas fiscais eletrônicas.</li>
+        <li data-i18n="modal.ixc.b2"><strong>Módulo financeiro:</strong> regras de cobrança, fluxo de pagamentos e relatórios financeiros.</li>
+        <li data-i18n="modal.ixc.b3"><strong>Gestão de clientes e contratos:</strong> funcionalidades de CRM interno, histórico de contratos e automações.</li>
+        <li data-i18n="modal.ixc.b4">Trabalho com <strong>Scrum/Kanban via GitLab</strong>, participando de sprints e code reviews regulares.</li>
       </ul>
-      <div class="modal-section-title">Stack utilizada</div>
+      <div class="modal-section-title" data-i18n="modal.stack">Stack utilizada</div>
       <div class="modal-tags"><span class="tag main">Laravel</span><span class="tag main">PHP</span><span class="tag main">TypeScript</span><span class="tag green">MariaDB</span><span class="tag main">Docker</span><span class="tag">GitLab CI</span><span class="tag">Scrum</span></div>
     </div>
   </div>
@@ -657,21 +722,21 @@
 <div class="modal-backdrop" id="modal-finestra" onclick="closeOnBackdrop(event,'finestra')">
   <div class="modal">
     <div class="modal-header">
-      <div><div class="modal-company">Finestra Móveis</div><div class="modal-role">Desenvolvedor Fullstack</div><div class="modal-period">Abr. 2021 → Set. 2024 · Saudades, SC</div></div>
+      <div><div class="modal-company">Finestra Móveis</div><div class="modal-role" data-i18n="exp.finestra.role">Desenvolvedor Fullstack</div><div class="modal-period" data-i18n="exp.finestra.period2">Abr. 2021 → Set. 2024 · Saudades, SC</div></div>
       <button class="modal-close" onclick="closeModal('finestra')">✕</button>
     </div>
     <div class="modal-body">
-      <p>Empresa do setor moveleiro onde atuei como desenvolvedor fullstack por mais de 3 anos, criando do zero <strong>módulos internos críticos</strong> com a arquitetura padrão do Laravel, ferramentas Microsoft e integração com hardware industrial.</p>
-      <div class="modal-section-title">Módulos desenvolvidos</div>
+      <p data-i18n="modal.finestra.p">Empresa do setor moveleiro onde atuei como desenvolvedor fullstack por mais de 3 anos, criando do zero <strong>módulos internos críticos</strong> com a arquitetura padrão do Laravel, ferramentas Microsoft e integração com hardware industrial.</p>
+      <div class="modal-section-title" data-i18n="modal.modules">Módulos desenvolvidos</div>
       <ul class="modal-achievements">
-        <li><strong>Centro de Distribuição com RFID:</strong> módulo para operação de CD usando leitores de etiqueta RFID para rastreamento de pedidos.</li>
-        <li><strong>Pedidos Comercial Externo:</strong> sistema para equipe de vendas registrar pedidos fora da fábrica.</li>
-        <li><strong>Análise e Projeção Fiscal:</strong> módulos de DRE, fluxo de caixa e projeção tributária com dados reais.</li>
-        <li><strong>Custo por Produto:</strong> motor de cálculo de custo unitário de móveis, considerando matéria-prima, mão de obra e overhead.</li>
-        <li><strong>Módulo de RH:</strong> portal para colaboradores acessarem dados, holerites, férias e informações contratuais.</li>
-        <li><strong>Dashboards e Power BI:</strong> inúmeros relatórios e painéis para análise gerencial.</li>
+        <li data-i18n="modal.finestra.b1"><strong>Centro de Distribuição com RFID:</strong> módulo para operação de CD usando leitores de etiqueta RFID para rastreamento de pedidos.</li>
+        <li data-i18n="modal.finestra.b2"><strong>Pedidos Comercial Externo:</strong> sistema para equipe de vendas registrar pedidos fora da fábrica.</li>
+        <li data-i18n="modal.finestra.b3"><strong>Análise e Projeção Fiscal:</strong> módulos de DRE, fluxo de caixa e projeção tributária com dados reais.</li>
+        <li data-i18n="modal.finestra.b4"><strong>Custo por Produto:</strong> motor de cálculo de custo unitário de móveis, considerando matéria-prima, mão de obra e overhead.</li>
+        <li data-i18n="modal.finestra.b5"><strong>Módulo de RH:</strong> portal para colaboradores acessarem dados, holerites, férias e informações contratuais.</li>
+        <li data-i18n="modal.finestra.b6"><strong>Dashboards e Power BI:</strong> inúmeros relatórios e painéis para análise gerencial.</li>
       </ul>
-      <div class="modal-section-title">Stack utilizada</div>
+      <div class="modal-section-title" data-i18n="modal.stack">Stack utilizada</div>
       <div class="modal-tags"><span class="tag main">Laravel</span><span class="tag main">PHP</span><span class="tag green">SQL Server</span><span class="tag">Power BI</span><span class="tag">RFID</span><span class="tag">JavaScript</span><span class="tag">REST API</span></div>
     </div>
   </div>
@@ -681,25 +746,174 @@
 <div class="modal-backdrop" id="modal-dw2" onclick="closeOnBackdrop(event,'dw2')">
   <div class="modal">
     <div class="modal-header">
-      <div><div class="modal-company">DW2 Digital</div><div class="modal-role">Desenvolvedor Mobile &amp; Suporte</div><div class="modal-period">Jul. 2020 → Abr. 2021 · Pinhalzinho, SC</div></div>
+      <div><div class="modal-company">DW2 Digital</div><div class="modal-role" data-i18n="exp.dw2.role">Desenvolvedor Mobile &amp; Suporte</div><div class="modal-period" data-i18n="exp.dw2.period2">Jul. 2020 → Abr. 2021 · Pinhalzinho, SC</div></div>
       <button class="modal-close" onclick="closeModal('dw2')">✕</button>
     </div>
     <div class="modal-body">
-      <p>Primeiro emprego como desenvolvedor. Atuei no desenvolvimento de um <strong>aplicativo mobile CRM</strong> e no suporte ao sistema para usuários finais. Foi onde dei os primeiros passos com Laravel e React Native em produção.</p>
-      <div class="modal-section-title">Principais atuações</div>
+      <p data-i18n="modal.dw2.p">Primeiro emprego como desenvolvedor. Atuei no desenvolvimento de um <strong>aplicativo mobile CRM</strong> e no suporte ao sistema para usuários finais. Foi onde dei os primeiros passos com Laravel e React Native em produção.</p>
+      <div class="modal-section-title" data-i18n="modal.highlights">Principais atuações</div>
       <ul class="modal-achievements">
-        <li><strong>App mobile CRM:</strong> funcionalidades no aplicativo React Native para gestão de relacionamento com clientes.</li>
-        <li><strong>API em Laravel:</strong> criação e manutenção de endpoints REST consumidos pelo app mobile.</li>
-        <li><strong>PostgreSQL:</strong> modelagem e queries para o sistema CRM.</li>
-        <li><strong>Suporte ao usuário:</strong> atendimento e resolução de problemas para clientes do sistema.</li>
+        <li data-i18n="modal.dw2.b1"><strong>App mobile CRM:</strong> funcionalidades no aplicativo React Native para gestão de relacionamento com clientes.</li>
+        <li data-i18n="modal.dw2.b2"><strong>API em Laravel:</strong> criação e manutenção de endpoints REST consumidos pelo app mobile.</li>
+        <li data-i18n="modal.dw2.b3"><strong>PostgreSQL:</strong> modelagem e queries para o sistema CRM.</li>
+        <li data-i18n="modal.dw2.b4"><strong>Suporte ao usuário:</strong> atendimento e resolução de problemas para clientes do sistema.</li>
       </ul>
-      <div class="modal-section-title">Stack utilizada</div>
+      <div class="modal-section-title" data-i18n="modal.stack">Stack utilizada</div>
       <div class="modal-tags"><span class="tag main">React Native</span><span class="tag main">Laravel</span><span class="tag main">PHP</span><span class="tag green">PostgreSQL</span><span class="tag">REST API</span></div>
     </div>
   </div>
 </div>
 
 <script>
+  // ══════════════════════════════════════════
+  //  TRANSLATIONS
+  // ══════════════════════════════════════════
+  const i18n = {
+    pt: {
+      "nav.about":"Sobre","nav.projects":"Projetos","nav.experience":"Experiência",
+      "nav.skills":"Skills","nav.tools":"Ferramentas","nav.education":"Formação","nav.contact":"Contato",
+      "hero.tag":"Desenvolvedor Backend · PHP &amp; Laravel",
+      "hero.desc":"Especialista em backend com PHP e Laravel, atuando em sistemas ERP, integrações fiscais, financeiras e CRM. Foco em código limpo, testes e arquitetura sustentável.",
+      "hero.age":"27 anos","hero.cta1":"Ver projetos","hero.cta2":"Entrar em contato","hero.cta3":"Baixar currículo",
+      "terminal.focus":"\"Backend · PHP · Laravel\"",
+      "about.label":"// sobre mim","about.title":"Backend sólido,<br>código com propósito",
+      "about.p1":"Sou desenvolvedor com <strong>foco principal em backend PHP e Laravel</strong>, atuando desde 2020 em empresas com produtos reais e times ágeis. Tenho experiência com sistemas ERP, CRM, integrações fiscais, módulos financeiros e muito mais.",
+      "about.p2":"Trabalho com <strong>Scrum e Kanban</strong>, escrevendo código testável e bem documentado. Docker e DI Container fazem parte do fluxo diário, junto de boas práticas com PHPStan, PHPUnit e testes de mutação com Infection.",
+      "about.p3":"Inglês técnico, curioso por natureza - estudo Node.js e Go nas horas vagas. Natural de Saudades, SC, atualmente em Chapecó.",
+      "about.stat1":"Anos de experiência","about.stat2":"Empresas de tecnologia","about.stat3":"Bancos de dados","about.stat4":"Maratona completada 🏅",
+      "projects.label":"// projetos pessoais","projects.title":"O que construo<br>por conta própria",
+      "projects.financial":"Sistema para gerenciar finanças pessoais - controle de receitas, despesas, metas e fluxo de caixa.",
+      "projects.clago":"Sistema em Golang para gerenciar presença de um grupo de encontro evangélico. Projeto explorando Go na prática.",
+      "projects.kings":"Plataforma para gerenciar campeonato de futebol de um grupo de amigos - tabela, rodadas, artilheiros e classificação.",
+      "exp.label":"// experiência","exp.title":"Onde já trabalhei","exp.current":"atual","exp.details":"Ver detalhes →",
+      "exp.ixc.role":"Desenvolvedor Backend","exp.ixc.period":"Set. 2024 → presente · ~1 ano","exp.ixc.period2":"Set. 2024 → presente · Chapecó, SC",
+      "exp.ixc.desc":"ERP para provedores de internet. Integrações fiscais, módulo financeiro e gestão de clientes e contratos.",
+      "exp.finestra.role":"Desenvolvedor Fullstack","exp.finestra.period":"Abr. 2021 → Set. 2024 · 3 anos e 5 meses","exp.finestra.period2":"Abr. 2021 → Set. 2024 · Saudades, SC",
+      "exp.finestra.desc":"Módulos internos: CD com RFID, pedidos comerciais, análise fiscal, custo de produto, RH e dashboards.",
+      "exp.dw2.role":"Desenvolvedor Mobile &amp; Suporte","exp.dw2.period":"Jul. 2020 → Abr. 2021 · 9 meses","exp.dw2.period2":"Jul. 2020 → Abr. 2021 · Pinhalzinho, SC",
+      "exp.dw2.desc":"App mobile CRM em React Native + API Laravel. Primeiro emprego como desenvolvedor.",
+      "skills.label":"// habilidades","skills.title":"Tecnologias &amp;<br>Especialidades",
+      "skills.languages":"Linguagens","skills.frameworks":"Frameworks","skills.databases":"Banco de Dados",
+      "skills.quality":"Qualidade &amp; Testes","skills.devops":"DevOps &amp; Infra","skills.arch":"Arquitetura &amp; Integrações",
+      "skills.data":"Dados &amp; Monitoramento","skills.methods":"Metodologias",
+      "tools.label":"// ferramentas","tools.title":"Stack do dia a dia","tools.daily":"uso diário","tools.exp":"experiência acumulada",
+      "edu.label":"// formação","edu.title":"Educação &amp;<br>Certificações",
+      "edu.degree1":"Sistemas de Informação","edu.meta1":"Ensino Superior Completo",
+      "edu.degree2":"Cursos de Programação","edu.inst2":"Diversas plataformas",
+      "edu.degree3":"Inglês Técnico","edu.inst3":"Leitura e escrita fluente","edu.meta3":"Documentações, issues, PRs",
+      "edu.degree4":"Gestão &amp; Soft Skills","edu.inst4":"Cursos complementares","edu.meta4":"Liderança · Gestão de pessoas · Desenvolvimento pessoal",
+      "contact.label":"// contato","contact.title":"Vamos conversar?",
+      "contact.desc":"Aberto a novas oportunidades, colaborações e projetos. Escolha o canal de preferência.",
+      "contact.phone":"telefone","contact.location":"local",
+      "modal.personal.title":"Além do código","modal.personal.sub":"Quem é Henrique fora do trabalho",
+      "modal.personal.p1":"Natural de <strong>Saudades, SC</strong>, atualmente morando em <strong>Chapecó</strong>. Filho mais novo de <strong>Ivone Höhn e João Lídio Höhn</strong>, irmão da <strong>Caroline Höhn</strong> e tio coruja de duas meninas - <strong>Heloísa e Isabela</strong>.",
+      "modal.personal.outside":"O que faço fora da tela",
+      "modal.personal.church.title":"Líder de jovens","modal.personal.church.desc":"Cristão evangélico e líder de jovens na minha igreja. Acredito que liderança é sobre servir e inspirar pessoas.",
+      "modal.personal.football.title":"Futebol","modal.personal.football.desc":"Jogo bastante futebol - tanto que criei um sistema pra gerenciar o campeonato do grupo de amigos.",
+      "modal.personal.run.title":"Corrida &amp; Maratona","modal.personal.run.desc":"Corredor de longa distância. Em 2024, completei uma <strong>maratona de 42 km</strong> em Porto Alegre - um dos maiores desafios pessoais da minha vida.",
+      "modal.personal.projects.title":"Projetos pessoais","modal.personal.projects.desc":"Construo sistemas para resolver problemas reais do meu dia a dia - finanças, campeonatos, encontros de grupo.",
+      "modal.highlights":"Principais atuações","modal.modules":"Módulos desenvolvidos","modal.stack":"Stack utilizada",
+      "modal.ixc.p":"A IXC Soft é uma empresa de <strong>software ERP voltado para provedores de internet</strong>, com ampla base de clientes no Brasil. Atuo no time de backend desenvolvendo e mantendo módulos críticos do sistema.",
+      "modal.ixc.b1":"<strong>Integrações fiscais:</strong> desenvolvimento e manutenção de fluxos de emissão e validação de notas fiscais eletrônicas.",
+      "modal.ixc.b2":"<strong>Módulo financeiro:</strong> regras de cobrança, fluxo de pagamentos e relatórios financeiros.",
+      "modal.ixc.b3":"<strong>Gestão de clientes e contratos:</strong> funcionalidades de CRM interno, histórico de contratos e automações.",
+      "modal.ixc.b4":"Trabalho com <strong>Scrum/Kanban via GitLab</strong>, participando de sprints e code reviews regulares.",
+      "modal.finestra.p":"Empresa do setor moveleiro onde atuei como desenvolvedor fullstack por mais de 3 anos, criando do zero <strong>módulos internos críticos</strong> com a arquitetura padrão do Laravel, ferramentas Microsoft e integração com hardware industrial.",
+      "modal.finestra.b1":"<strong>Centro de Distribuição com RFID:</strong> módulo para operação de CD usando leitores de etiqueta RFID para rastreamento de pedidos.",
+      "modal.finestra.b2":"<strong>Pedidos Comercial Externo:</strong> sistema para equipe de vendas registrar pedidos fora da fábrica.",
+      "modal.finestra.b3":"<strong>Análise e Projeção Fiscal:</strong> módulos de DRE, fluxo de caixa e projeção tributária com dados reais.",
+      "modal.finestra.b4":"<strong>Custo por Produto:</strong> motor de cálculo de custo unitário de móveis, considerando matéria-prima, mão de obra e overhead.",
+      "modal.finestra.b5":"<strong>Módulo de RH:</strong> portal para colaboradores acessarem dados, holerites, férias e informações contratuais.",
+      "modal.finestra.b6":"<strong>Dashboards e Power BI:</strong> inúmeros relatórios e painéis para análise gerencial.",
+      "modal.dw2.p":"Primeiro emprego como desenvolvedor. Atuei no desenvolvimento de um <strong>aplicativo mobile CRM</strong> e no suporte ao sistema para usuários finais. Foi onde dei os primeiros passos com Laravel e React Native em produção.",
+      "modal.dw2.b1":"<strong>App mobile CRM:</strong> funcionalidades no aplicativo React Native para gestão de relacionamento com clientes.",
+      "modal.dw2.b2":"<strong>API em Laravel:</strong> criação e manutenção de endpoints REST consumidos pelo app mobile.",
+      "modal.dw2.b3":"<strong>PostgreSQL:</strong> modelagem e queries para o sistema CRM.",
+      "modal.dw2.b4":"<strong>Suporte ao usuário:</strong> atendimento e resolução de problemas para clientes do sistema.",
+    },
+    en: {
+      "nav.about":"About","nav.projects":"Projects","nav.experience":"Experience",
+      "nav.skills":"Skills","nav.tools":"Tools","nav.education":"Education","nav.contact":"Contact",
+      "hero.tag":"Backend Developer · PHP &amp; Laravel",
+      "hero.desc":"PHP and Laravel backend specialist, working with ERP systems, fiscal integrations, financial modules and CRM. Focused on clean code, testing and sustainable architecture.",
+      "hero.age":"27 years old","hero.cta1":"See projects","hero.cta2":"Get in touch","hero.cta3":"Download resume",
+      "terminal.focus":"\"Backend · PHP · Laravel\"",
+      "about.label":"// about me","about.title":"Solid backend,<br>purposeful code",
+      "about.p1":"I'm a developer with a <strong>primary focus on PHP and Laravel backend</strong>, working since 2020 in companies with real products and agile teams. I have experience with ERP systems, CRM, fiscal integrations, financial modules and more.",
+      "about.p2":"I work with <strong>Scrum and Kanban</strong>, writing testable and well-documented code. Docker and DI Container are part of my daily workflow, along with best practices using PHPStan, PHPUnit and mutation testing with Infection.",
+      "about.p3":"Technical English proficiency, naturally curious - I study Node.js and Go in my spare time. From Saudades, SC, currently living in Chapecó.",
+      "about.stat1":"Years of experience","about.stat2":"Tech companies","about.stat3":"Databases","about.stat4":"Marathon completed 🏅",
+      "projects.label":"// personal projects","projects.title":"What I build<br>on my own",
+      "projects.financial":"System to manage personal finances - income, expenses, goals and cash flow tracking.",
+      "projects.clago":"Golang system to manage attendance of an evangelical group meeting. Practical language exploration.",
+      "projects.kings":"Platform to manage a friends football league - standings, rounds, top scorers and rankings.",
+      "exp.label":"// experience","exp.title":"Where I've worked","exp.current":"current","exp.details":"See details →",
+      "exp.ixc.role":"Backend Developer","exp.ixc.period":"Sep. 2024 → present · ~1 year","exp.ixc.period2":"Sep. 2024 → present · Chapecó, SC",
+      "exp.ixc.desc":"ERP for internet service providers. Fiscal integrations, financial module and customer/contract management.",
+      "exp.finestra.role":"Fullstack Developer","exp.finestra.period":"Apr. 2021 → Sep. 2024 · 3 years 5 months","exp.finestra.period2":"Apr. 2021 → Sep. 2024 · Saudades, SC",
+      "exp.finestra.desc":"Internal modules: DC with RFID, commercial orders, fiscal analysis, product cost, HR and dashboards.",
+      "exp.dw2.role":"Mobile Developer &amp; Support","exp.dw2.period":"Jul. 2020 → Apr. 2021 · 9 months","exp.dw2.period2":"Jul. 2020 → Apr. 2021 · Pinhalzinho, SC",
+      "exp.dw2.desc":"Mobile CRM app in React Native + Laravel API. First job as a developer.",
+      "skills.label":"// skills","skills.title":"Technologies &amp;<br>Specialties",
+      "skills.languages":"Languages","skills.frameworks":"Frameworks","skills.databases":"Databases",
+      "skills.quality":"Quality &amp; Testing","skills.devops":"DevOps &amp; Infra","skills.arch":"Architecture &amp; Integrations",
+      "skills.data":"Data &amp; Monitoring","skills.methods":"Methodologies",
+      "tools.label":"// tools","tools.title":"Daily stack","tools.daily":"daily use","tools.exp":"accumulated experience",
+      "edu.label":"// education","edu.title":"Education &amp;<br>Certifications",
+      "edu.degree1":"Information Systems","edu.meta1":"Bachelor's Degree — Completed",
+      "edu.degree2":"Programming Courses","edu.inst2":"Various platforms",
+      "edu.degree3":"Technical English","edu.inst3":"Reading and writing proficiency","edu.meta3":"Documentation, issues, PRs",
+      "edu.degree4":"Management &amp; Soft Skills","edu.inst4":"Additional courses","edu.meta4":"Leadership · People management · Personal development",
+      "contact.label":"// contact","contact.title":"Let's talk?",
+      "contact.desc":"Open to new opportunities, collaborations and projects. Choose your preferred channel.",
+      "contact.phone":"phone","contact.location":"location",
+      "modal.personal.title":"Beyond the code","modal.personal.sub":"Who is Henrique outside of work",
+      "modal.personal.p1":"From <strong>Saudades, SC</strong>, currently living in <strong>Chapecó</strong>. Youngest son of <strong>Ivone Höhn and João Lídio Höhn</strong>, brother of <strong>Caroline Höhn</strong> and proud uncle of two girls - <strong>Heloísa and Isabela</strong>.",
+      "modal.personal.outside":"What I do away from the screen",
+      "modal.personal.church.title":"Youth leader","modal.personal.church.desc":"Evangelical Christian and youth leader at my church. I believe leadership is about serving and inspiring people.",
+      "modal.personal.football.title":"Football","modal.personal.football.desc":"I play a lot of football - so much that I built a system to manage my friends' league.",
+      "modal.personal.run.title":"Running &amp; Marathon","modal.personal.run.desc":"Long-distance runner. In 2024, I completed a <strong>42 km marathon</strong> in Porto Alegre - one of the biggest personal challenges of my life.",
+      "modal.personal.projects.title":"Personal projects","modal.personal.projects.desc":"I build systems to solve real day-to-day problems - finances, championships, group meetings.",
+      "modal.highlights":"Key responsibilities","modal.modules":"Modules developed","modal.stack":"Stack used",
+      "modal.ixc.p":"IXC Soft is a company that develops <strong>ERP software for internet service providers</strong>, with a large customer base across Brazil. I work on the backend team developing and maintaining critical system modules.",
+      "modal.ixc.b1":"<strong>Fiscal integrations:</strong> development and maintenance of electronic invoice issuance and validation workflows.",
+      "modal.ixc.b2":"<strong>Financial module:</strong> billing rules, payment flows and financial reporting.",
+      "modal.ixc.b3":"<strong>Customer and contract management:</strong> internal CRM features, contract history and automations.",
+      "modal.ixc.b4":"Working with <strong>Scrum/Kanban via GitLab</strong>, participating in sprints and regular code reviews.",
+      "modal.finestra.p":"Furniture company where I worked as a fullstack developer for over 3 years, building from scratch <strong>critical internal modules</strong> using standard Laravel architecture, Microsoft tools and industrial hardware integration.",
+      "modal.finestra.b1":"<strong>Distribution Center with RFID:</strong> module for DC operations using RFID tag readers to track orders.",
+      "modal.finestra.b2":"<strong>External Commercial Orders:</strong> system for the sales team to register orders outside the factory.",
+      "modal.finestra.b3":"<strong>Fiscal Analysis and Projection:</strong> P&amp;L, cash flow and tax projection modules with real data.",
+      "modal.finestra.b4":"<strong>Product Cost Engine:</strong> unit cost calculation for furniture, considering raw materials, labor and overhead.",
+      "modal.finestra.b5":"<strong>HR Module:</strong> self-service portal for employees to access payslips, vacation and contract information.",
+      "modal.finestra.b6":"<strong>Dashboards and Power BI:</strong> numerous reports and panels for management analysis.",
+      "modal.dw2.p":"First job as a developer. I worked on a <strong>mobile CRM application</strong> and provided system support to end users. This is where I took my first production steps with Laravel and React Native.",
+      "modal.dw2.b1":"<strong>Mobile CRM app:</strong> features in the React Native app for customer relationship management.",
+      "modal.dw2.b2":"<strong>Laravel API:</strong> creation and maintenance of REST endpoints consumed by the mobile app.",
+      "modal.dw2.b3":"<strong>PostgreSQL:</strong> data modeling and queries for the CRM system.",
+      "modal.dw2.b4":"<strong>User support:</strong> customer service and issue resolution for system users.",
+    }
+  };
+
+  function setLang(lang) {
+    document.getElementById('btn-pt').classList.toggle('active', lang === 'pt');
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en';
+    document.title = lang === 'pt'
+      ? 'Henrique Höhn - Desenvolvedor Backend PHP'
+      : 'Henrique Höhn - Backend Developer PHP';
+
+    const dict = i18n[lang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (dict[key] !== undefined) el.innerHTML = dict[key];
+    });
+    document.querySelectorAll('[data-i18n-str]').forEach(el => {
+      const key = el.getAttribute('data-i18n-str');
+      if (dict[key] !== undefined) el.textContent = dict[key];
+    });
+  }
+
   // Fade-in
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
